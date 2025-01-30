@@ -1,0 +1,255 @@
+/* 完整CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+body {
+    background: #1a1a1a;
+    color: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.6;
+}
+
+.chat-container {
+    flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem 8rem;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.message {
+    margin: 1.2rem 0;
+    max-width: 78%;
+    position: relative;
+    animation: messageSlide 0.3s ease-out;
+}
+
+/* 用户消息保持气泡样式 */
+.user-message .message-bubble {
+    background: #4a90e2;
+    margin-left: auto;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* 机器人消息基础样式 */
+.bot-message .message-bubble {
+    margin-right: auto;
+    padding: 0;
+}
+
+/* 思考部分气泡样式 */
+.think-section {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.think-label {
+    color: #8c8c8c;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.think-label::before {
+    content: "💭";
+    font-size: 1.1em;
+}
+
+.think-content {
+    color: #d9d9d9;
+    white-space: pre-wrap;
+    font-size: 0.95em;
+    line-height: 1.5;
+    padding-left: 12px;
+    border-left: 2px solid #4a90e2;
+}
+
+/* 回答部分普通样式 */
+.reply-content {
+    color: #fff;
+    font-size: 1em;
+    line-height: 1.6;
+    padding: 8px 0 8px 12px;
+    position: relative;
+}
+
+.reply-content::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 2px;
+    background: #4a90e2;
+    opacity: 0.3;
+}
+
+.input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #2d2d2d;
+    padding: 1.5rem 0;
+    border-top: 2px solid #3d3d3d;
+    z-index: 100;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.input-group {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    gap: 1rem;
+    padding: 0 1.5rem;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #3d3d3d;
+    color: white;
+    font-size: 1.1rem;
+}
+
+button {
+    padding: 1rem 2rem;
+    background: #4a90e2;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #3672b2;
+}
+
+@keyframes messageSlide {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .chat-container {
+        padding: 1rem 0.5rem 6rem;
+    }
+    
+    .message {
+        max-width: 90%;
+    }
+    
+    input[type="text"] {
+        padding: 0.8rem;
+    }
+    
+    button {
+        padding: 0.8rem 1.5rem;
+    }
+}
+/* 在原有CSS基础上添加以下Markdown样式 */
+.reply-content {
+    /* 保留原有样式 */
+    h1, h2, h3 {
+        color: #fff;
+        margin: 1.2em 0 0.8em;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    code {
+        background: rgba(0,0,0,0.3);
+        padding: 0.2em 0.4em;
+        border-radius: 4px;
+        font-family: Monaco, Consolas, "Courier New", monospace;
+    }
+
+    pre {
+        background: rgba(0,0,0,0.3)!important;
+        padding: 1em;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 1em 0;
+    }
+
+    pre code {
+        background: none;
+        padding: 0;
+    }
+
+    blockquote {
+        border-left: 4px solid #4a90e2;
+        margin: 1em 0;
+        padding: 0.5em 1em;
+        background: rgba(255,255,255,0.05);
+        color: #ccc;
+    }
+
+    ul, ol {
+        padding-left: 1.5em;
+        margin: 0.8em 0;
+    }
+
+    li {
+        margin: 0.4em 0;
+    }
+
+    a {
+        color: #6ab0f3;
+        text-decoration: underline;
+    }
+
+    strong {
+        color: #fff;
+    }
+
+    table {
+        border-collapse: collapse;
+        margin: 1em 0;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 0.6em;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    th {
+        background: rgba(255,255,255,0.1);
+    }
+}
+
+/* 思考部分添加代码高亮 */
+.think-content {
+    pre {
+        background: rgba(0,0,0,0.4)!important;
+    }
+    
+    code {
+        background: rgba(0,0,0,0.3);
+    }
+}

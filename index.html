@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>AI聊天助手</title>
+ <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+ <div class="chat-container" id="chatContainer" style="padding: 20px 0;">
+  <div class="message bot-message">您好！随时为您效劳</div>
+ </div>
+ <div class="loading" id="loading">思考中</div>
+ <div class="error" id="error"></div>
+ <div class="input-area">
+  <div class="input-group">
+   <input type="text" id="messageInput" placeholder="输入消息..." autocomplete="off" autofocus>
+   <button id="sendButton" onclick="sendMessage()">发送</button>
+  </div>
+ </div>
+ <script type="text/javascript" src="script.js"></script>
+</body>
+
+</html>
