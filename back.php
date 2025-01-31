@@ -1,27 +1,24 @@
 <?php
-// 第一阶段：安全缓冲区控制
 while (ob_get_level() > 0) {
     if (!ob_end_clean()) break;
 }
 header_remove();
 header('Content-Type: application/json; charset=utf-8');
 
-// 第二阶段：错误报告配置
 ini_set('display_errors', 0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 
-// 第三阶段：配置中心
 const CONFIG = [
-    'api_token'    => '填写此处',
-    'account_id'   => '填写此处',
-    'model'        => '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b', //使用的模型
-    'timeout'      => 25,  // 总超时时间(秒)
-    'max_length'   => 10000 // 用户输入最大长度
+    'api_token'    => '待填写',
+    'account_id'   => '待填写',
+    'model'        => '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b',
+    'timeout'      => 50,
+    'max_length'   => 10000,
+    'max_history'  => 6,
+    'max_context'  => 4096
 ];
 
-// 第四阶段：主逻辑
 try {
-    // 输入验证三重检查
     $input = @file_get_contents('php://input');
     if ($input === false || strlen($input) === 0) {
         throw new Exception("请求内容不可读");
@@ -29,8 +26,12 @@ try {
 
     $data = json_decode($input, true, 512, JSON_BIGINT_AS_STRING | JSON_THROW_ON_ERROR);
     $message = trim($data['message'] ?? '');
+    $history = $data['history'] ?? [];
 
-    // 内容安全检查
+    if (!is_array($history)) {
+        throw new Exception("无效的历史数据格式");
+    }
+
     if (empty($message)) {
         throw new Exception("消息内容不能为空");
     }
@@ -38,7 +39,43 @@ try {
         throw new Exception("输入内容过长");
     }
 
-    // API请求配置
+    $messagesChain = [
+        ["role" => "system", "content" => "回答内容与思考过程不要重复"]
+    ];
+
+    foreach ($history as $record) {
+        if (isset($record['role'], $record['content']) &&
+            in_array($record['role'], ['user', 'assistant'])) 
+        {
+            $cleanContent = htmlspecialchars(
+                mb_substr($record['content'], 0, CONFIG['max_length'], 'UTF-8'),
+                ENT_QUOTES,
+                'UTF-8'
+            );
+            $messagesChain[] = [
+                'role' => $record['role'],
+                'content' => $cleanContent
+            ];
+        }
+    }
+
+    $currentMessage = mb_substr($message, 0, CONFIG['max_length'], 'UTF-8');
+    $messagesChain[] = ["role" => "user", "content" => $currentMessage];
+
+    $initialCount = count($messagesChain);
+    $totalToken = 0;
+    foreach ($messagesChain as $msg) {
+        $totalToken += ceil(mb_strlen($msg['content'], 'UTF-8') * 0.75);
+    }
+
+    $cutStart = 1;
+    while ($totalToken > CONFIG['max_context'] && count($messagesChain) > $cutStart) {
+        $removedPair = array_splice($messagesChain, $cutStart, 2);
+        foreach ($removedPair as $msg) {
+            $totalToken -= ceil(mb_strlen($msg['content'], 'UTF-8') * 0.75);
+        }
+    }
+
     $ch = curl_init();
     $endpoint = sprintf(
         "https://api.cloudflare.com/client/v4/accounts/%s/ai/run/%s",
@@ -55,10 +92,7 @@ try {
         ],
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => json_encode([
-            "messages" => [
-                ["role" => "system", "content" => ""],
-                ["role" => "user", "content" => $message]
-            ],
+            "messages" => $messagesChain,
             "temperature" => 0.7,
             "max_tokens"  => 1000
         ], JSON_THROW_ON_ERROR),
@@ -67,14 +101,13 @@ try {
         CURLOPT_CONNECTTIMEOUT => 15,
         CURLOPT_SSL_VERIFYHOST => 2,
         CURLOPT_SSL_VERIFYPEER => true,
-        CURLOPT_ENCODING       => 'gzip' // 自动解压响应
+        CURLOPT_ENCODING       => 'gzip'
     ]);
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
-    // HTTP状态码验证
     if ($httpCode !== 200) {
         throw new Exception(sprintf(
             "API请求失败 [HTTP %d] %s",
@@ -83,12 +116,10 @@ try {
         ));
     }
 
-    // 内容类型验证
     if (stripos($contentType, 'application/json') === false) {
         throw new Exception("非JSON响应: " . substr($response, 0, 200));
     }
 
-    // 响应解析
     $responseData = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
     
     if (!isset($responseData['result']['response'])) {
@@ -96,16 +127,18 @@ try {
         throw new Exception("API响应结构异常");
     }
 
-    // 敏感内容过滤示例
     $filteredResponse = htmlspecialchars($responseData['result']['response'], ENT_QUOTES);
 
-    // 构建最终输出
     $output = [
         'success' => true,
         'reply'   => $filteredResponse,
         'meta'    => [
             'model'     => CONFIG['model'],
-            'timestamp' => time()
+            'timestamp' => time(),
+            'context'   => [
+                'used' => count($messagesChain) - 1,
+                'cut'  => $initialCount - count($messagesChain)
+            ]
         ]
     ];
 
@@ -124,7 +157,6 @@ try {
     exit;
 }
 
-// 第五阶段：错误处理函数
 function deliver_error(string $message, int $code = 500): void {
     http_response_code($code);
     $output = [
@@ -136,7 +168,6 @@ function deliver_error(string $message, int $code = 500): void {
     try {
         echo json_encode($output, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
     } catch (JsonException $e) {
-        // 终极fallback
         echo '{"success":false,"error":"系统内部错误"}';
     }
     exit;
