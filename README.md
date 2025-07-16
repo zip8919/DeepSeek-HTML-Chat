@@ -70,7 +70,7 @@ newPreset: {
 
 ## 许可证
 
-GNU General Public License v3.0（GPLv3）
+MIT
 
 ## 致谢
 
