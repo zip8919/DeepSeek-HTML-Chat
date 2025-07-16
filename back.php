@@ -172,3 +172,4 @@ function deliver_error(string $message, int $code = 500): void {
     }
     exit;
 }
+
