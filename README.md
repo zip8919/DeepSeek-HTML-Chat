@@ -38,13 +38,6 @@
 ├── index.html      # 主页面文件
 ├── README.md       # 本说明文档
 ├── LICENSE         # MIT
-├── lib/            # 第三方依赖
-│   ├── auto-render.min.js
-│   ├── github-dark-dimmed.min.css
-│   ├── highlight.min.js
-│   ├── katex.min.css
-│   ├── katex.min.js
-│   └── marked.min.js
 ├── script/         # 脚本文件
 │   └── main.js
 └── style/          # 样式文件
