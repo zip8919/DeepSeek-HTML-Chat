@@ -35,9 +35,21 @@
 ## 目录结构
 ```
 .
-├── index.html      # 单文件应用（含全部样式与脚本）
+├── index.html      # 主页面文件
 ├── README.md       # 本说明文档
-└── LICENSE         # MIT
+├── LICENSE         # MIT
+├── lib/            # 第三方依赖
+│   ├── auto-render.min.js
+│   ├── github-dark-dimmed.min.css
+│   ├── highlight.min.js
+│   ├── katex.min.css
+│   ├── katex.min.js
+│   └── marked.min.js
+├── script/         # 脚本文件
+│   └── main.js
+└── style/          # 样式文件
+    └── style.css
+
 ```
 
 ---
@@ -48,10 +60,10 @@
    是的，需要连接 SiliconFlow API。
 
 2. **能否嵌入到其他项目？**  
-   可以，直接引入 `index.html` 或将样式与脚本拆分。
+   可以，只需将 `index.html`、`style/` 、`lib/` 和 `script/` 一并复制到你的项目目录中，并在需要的位置通过 `<iframe src="path/to/index.html">` 或直接打开 `index.html` 即可运行。
 
 3. **如何修改样式？**  
-   在 `<style>` 标签中调整 CSS 变量即可。
+   在 `/style/style.css` 标签中调整 CSS 变量即可。
 
 ---
 
