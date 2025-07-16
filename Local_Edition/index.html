@@ -520,7 +520,7 @@
                 <!-- 预设提示词按钮将通过JS动态生成 -->
             </div>
             <div class="input-group">
-                <input type="text" id="messageInput" placeholder="输入您的问题...">
+                <input type="text" id="messageInput" placeholder="输入您的问题..." autocomplete="off">
                 <button id="sendButton">发送</button>
             </div>
             <div class="error-message" id="errorDiv"></div>
@@ -533,6 +533,7 @@
             
             <div class="config-group">
                 <label for="apiKey">API Key</label>
+                <input type="text" name="username" autocomplete="username" style="display:none">
                 <input type="password" id="apiKey" placeholder="输入API Key">
             </div>
             
