@@ -26,6 +26,7 @@ DeepSeekR1-ChatWeb 是一个基于 Web 的简易聊天界面，前端使用 HTML
    php -S localhost:8080
    ```
 3. 在浏览器中访问 `http://localhost:8080/index.html`
+4. 或者您也可以直接使用本地版，下载`/Local_Edition/index.html`并打开即可。
 
 ## 使用说明
 - 在输入框输入消息，点击发送即可与后端交互。
