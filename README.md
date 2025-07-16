@@ -70,7 +70,7 @@ newPreset: {
 
 ## 许可证
 
-MIT © 2025
+GNU General Public License v3.0（GPLv3）
 
 ## 致谢
 
