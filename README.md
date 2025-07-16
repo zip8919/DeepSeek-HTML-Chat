@@ -1,36 +1,80 @@
-# DeepSeekR1-ChatWeb
+# AI 对话助手网页版
 
-## 项目简介
-DeepSeekR1-ChatWeb 是一个基于 Web 的简易聊天界面，前端使用 HTML、CSS 和 JavaScript，后端采用 PHP 实现。
+一个基于 HTML/CSS/JS 构建的轻量级 AI 对话网页应用，支持以下特性：
 
-## 功能特性
-- 支持用户输入消息并显示在聊天窗口
-- 前后端分离，异步通信
-- 简洁美观的界面设计
+- 流式响应（打字机效果）
+- 思考过程可视化（可折叠）
+- Markdown 渲染（数学公式、代码高亮）
+- 预设提示词（数学、编程、创意写作）
+- 自定义系统提示词
 
-## 文件结构
-- `index.html`：主页面，包含聊天窗口和输入框
-- `style.css`：页面样式文件
-- `script.js`：前端交互逻辑
-- `back.php`：后端消息处理脚本
-- `LICENSE`：开源协议
-- `README.md`：项目说明文档
+---
 
 ## 快速开始
-1. 克隆项目到本地：
-   ```bash
-   git clone https://github.com/baicaizhale/DeepSeekR1-ChatWeb
-   ```
-2. 启动本地 PHP 服务（如使用 XAMPP/WAMP 或命令行）：
-   ```bash
-   php -S localhost:8080
-   ```
-3. 在浏览器中访问 `http://localhost:8080/index.html`
-4. 或者您也可以直接使用本地版，下载`/Local_Edition/index.html`并打开即可。
 
-## 使用说明
-- 在输入框输入消息，点击发送即可与后端交互。
-- 后端可根据需求扩展为接入 AI 或数据库。
+1. 克隆或直接下载本项目。  
+2. 本地打开 `index.html` 即可使用。  
+3. 首次使用请点击右上角 ⚙️ 图标配置：
+   - **API Key**：你的 SiliconFlow 密钥  
+   - **模型**：默认 `deepseek-ai/DeepSeek-V3`，可自行修改  
+   - **提示词**：内置 4 种预设 + 自定义选项  
+
+---
+
+## 功能详解
+
+| 功能 | 说明 |
+|---|---|
+| **流式响应** | 回答逐字实时显示，不卡顿。 |
+| **思考过程** | 支持折叠深度思考思考过程。 |
+| **Markdown** | 支持公式、代码块、列表、引用等。 |
+| **提示词** | 默认 / 数学专家 / 编程专家 / 创意写作 / 自定义。 |
+
+---
+
+## 目录结构
+```
+.
+├── index.html      # 单文件应用（含全部样式与脚本）
+├── README.md       # 本说明文档
+└── LICENSE         # MIT
+```
+
+---
+
+## 常见问题
+
+1. **必须联网吗？**  
+   是的，需要连接 SiliconFlow API。
+
+2. **能否嵌入到其他项目？**  
+   可以，直接引入 `index.html` 或将样式与脚本拆分。
+
+3. **如何修改样式？**  
+   在 `<style>` 标签中调整 CSS 变量即可。
+
+---
+
+## 开发者指南
+
+### 添加新的提示词预设
+
+在 `PROMPT_PRESETS` 对象中追加：
+
+```js
+newPreset: {
+    name: "新预设",
+    content: "你是一名……"
+}
+```
 
 ## 许可证
-本项目采用 MIT 协议，详见 LICENSE 文件。
+
+MIT © 2025
+
+## 致谢
+
+- [Marked.js](https://marked.js.org) – Markdown 渲染  
+- [KaTeX](https://katex.org) – 数学公式  
+- [Highlight.js](https://highlightjs.org) – 代码高亮  
+- [SiliconFlow](https://siliconflow.cn) – 提供推理 API
