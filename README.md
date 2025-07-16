@@ -70,7 +70,7 @@ newPreset: {
 
 ## 许可证
 
-MIT
+MIT © 2025
 
 ## 致谢
 
