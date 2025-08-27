@@ -12,7 +12,7 @@
     <script defer src="https://cdn.mengze.vip/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <link rel="stylesheet"href="./style/style.css">
+    <link rel="stylesheet" href="./style/style.css">
     <script>hljs.highlightAll();</script>
 
 </head>
@@ -552,21 +552,29 @@ function buildMessagesChain(currentMessage) {
         }
     ];
 
-    // 添加历史记录
+    // 添加历史记录，确保格式正确
+    let lastRole = "system";
     chatHistory.slice(-CONFIG.maxHistory * 2).forEach(record => {
         if (record.role && record.content) {
+            // 如果连续两个 user，跳过后一个 user
+            if (lastRole === "user" && record.role === "user") {
+                return;
+            }
             messagesChain.push({
                 role: record.role,
                 content: record.content.substring(0, CONFIG.maxLength)
             });
+            lastRole = record.role;
         }
     });
 
-    // 添加当前消息
-    messagesChain.push({
-        role: "user",
-        content: currentMessage.substring(0, CONFIG.maxLength)
-    });
+    // 如果最后一条历史记录是 user，则不再添加新的 user 消消息，避免连续 user
+    if (messagesChain.length === 0 || messagesChain[messagesChain.length - 1].role !== "user") {
+        messagesChain.push({
+            role: "user",
+            content: currentMessage.substring(0, CONFIG.maxLength)
+        });
+    }
 
     return messagesChain;
 }
